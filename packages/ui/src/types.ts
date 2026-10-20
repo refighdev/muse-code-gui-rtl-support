@@ -63,7 +63,7 @@ export interface SessionSummary {
   pinned: boolean;
   /** Sandbox posture at creation; null for threads recorded before tracking. */
   sandboxDisabled: boolean | null;
-  /** The aonia profile this thread runs under; null for the default login. */
+  /** The account this thread runs under; null for the default login. */
   accountId: string | null;
   /** For a side chat, the thread it was opened from; the sidebar nests it there. */
   sideOf?: string | null;

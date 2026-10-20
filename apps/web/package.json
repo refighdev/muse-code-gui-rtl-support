@@ -1,7 +1,7 @@
 {
   "name": "@musegui/web",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Muse Code GUI web app: shared UI wired to the local server over REST and SSE",
   "type": "module",
   "scripts": {

@@ -10,7 +10,7 @@ export interface Project {
   updatedAt: string;
   /** Latest activity across the project's visible sessions, or its creation time. */
   activityAt: string;
-  /** The aonia profile new threads in this project default to; null for the default login. */
+  /** The account new threads in this project default to; null for the default login. */
   defaultAccountId: string | null;
 }
 
@@ -40,7 +40,7 @@ export interface SessionRecord {
   pinned: boolean;
   /** Sandbox posture at creation: null for sessions recorded before tracking. */
   sandboxDisabled: boolean | null;
-  /** The aonia profile a session was created under; null for the default login. Set once, never changed. */
+  /** The account a session was created under; null for the default login. Set once, never changed. */
   accountId: string | null;
   /** For a side chat, the main session it was opened from; null otherwise. Set once, never changed. */
   sideOf: string | null;

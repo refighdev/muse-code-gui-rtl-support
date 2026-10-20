@@ -1,6 +1,6 @@
 {
   "name": "@musegui/daemon",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Muse Code GUI daemon: MSP host management, session orchestration, local state, WSL routing",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -10,7 +10,6 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@harjjotsinghh/aonia": "^0.1.0",
     "@muse-code/sdk": "^1.4.10"
   },
   "devDependencies": {

@@ -114,7 +114,7 @@ export interface MuseGuiClient {
   setTitleSettings(patch: { enabled?: boolean; modelId?: string | null }): Promise<TitleSettings>;
   getSandboxSettings(): Promise<SandboxSettings>;
   setSandboxSettings(patch: { disabled?: boolean }): Promise<SandboxSettings>;
-  /** Every aonia profile Muse Code GUI can run, with its non-secret identity. */
+  /** Every account Muse Code GUI can run, with its non-secret identity. */
   listAccounts(): Promise<import("./types.js").AccountView[]>;
   /** Makes a profile; `seedFromDefault` copies settings.json and trust.json from the default login. */
   createAccount(id: string, options?: { name?: string; seedFromDefault?: boolean }): Promise<{ id: string; name: string }>;

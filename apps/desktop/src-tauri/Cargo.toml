@@ -1,6 +1,6 @@
 [package]
 name = "musegui"
-version = "0.1.0"
+version = "0.1.1"
 description = "Muse Code GUI: desktop ADE for the Muse Code CLI"
 edition = "2021"
 

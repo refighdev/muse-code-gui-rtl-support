@@ -4,7 +4,7 @@ import { EventEmitter } from "node:events";
 import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createAonia } from "@harjjotsinghh/aonia";
+import { createAccounts } from "../src/accounts.js";
 import {
   MuseGuiServer,
   deriveTitle,
@@ -980,17 +980,17 @@ describe("MuseGuiServer", () => {
   it("tracks plan usage per account and keeps the newest as the default", async () => {
     const work = new FakeConnection();
     const personal = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const aonia = createAonia({ home, platform: "linux", musePath: "muse" });
-    await aonia.createProfile("work");
-    await aonia.createProfile("personal");
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const accounts = createAccounts({ home, platform: "linux", musePath: "muse" });
+    await accounts.createAccount("work");
+    await accounts.createAccount("personal");
     // Route each account's host to its own connection so their notifications are distinct.
     const factory = (target: ServeTarget): HostHandle => {
-      // Normalize separators: aonia's profile root uses backslashes on Windows (...\profiles\work\config).
+      // Normalize separators: the account root uses backslashes on Windows (...\profiles\work\config).
       const account = target.env?.["XDG_CONFIG_HOME"]?.replaceAll("\\", "/").includes("/work/") ? work : personal;
       return fakeFactory(account)(target);
     };
-    const { base } = await start(work, { hostFactory: factory, aonia });
+    const { base } = await start(work, { hostFactory: factory, accounts });
 
     work.replies.set("session/start", { session: { sessionId: "w1" } });
     personal.replies.set("session/start", { session: { sessionId: "p1" } });
@@ -1477,14 +1477,14 @@ describe("MuseGuiServer", () => {
     assert.equal(probe.targets.length, 2);
   });
 
-  it("accepts an injected aonia and still starts a plain host with no account", async () => {
+  it("accepts an injected accounts module and still starts a plain host with no account", async () => {
     const connection = new FakeConnection();
     connection.replies.set("session/start", { session: { sessionId: "s1" } });
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
     const probe: FactoryProbe = { targets: [], exits: [] };
     const { base } = await start(connection, {
       hostFactory: fakeFactory(connection, probe),
-      aonia: createAonia({ home, platform: "linux", musePath: "muse" }),
+      accounts: createAccounts({ home, platform: "linux", musePath: "muse" }),
     });
     const res = await send(base, "/api/sessions", { cwd: "/work/proj" });
     assert.equal(res.status, 200);
@@ -1495,11 +1495,11 @@ describe("MuseGuiServer", () => {
   it("spawns a per-account host with the profile environment merged over process.env", async () => {
     const connection = new FakeConnection();
     connection.replies.set("session/start", { session: { sessionId: "s1" } });
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const aonia = createAonia({ home, platform: "linux", musePath: "muse" });
-    const work = await aonia.createProfile("work");
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const accounts = createAccounts({ home, platform: "linux", musePath: "muse" });
+    const work = await accounts.createAccount("work");
     const probe: FactoryProbe = { targets: [], exits: [] };
-    const { base } = await start(connection, { hostFactory: fakeFactory(connection, probe), aonia });
+    const { base } = await start(connection, { hostFactory: fakeFactory(connection, probe), accounts });
 
     const res = await send(base, "/api/sessions", { cwd: "/work/proj", accountId: "work" });
     assert.equal(res.status, 200);
@@ -1517,12 +1517,12 @@ describe("MuseGuiServer", () => {
     const connection = new FakeConnection();
     let n = 0;
     connection.replies.set("session/start", () => ({ session: { sessionId: `s${++n}` } }));
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const aonia = createAonia({ home, platform: "linux", musePath: "muse" });
-    await aonia.createProfile("work");
-    await aonia.createProfile("personal");
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const accounts = createAccounts({ home, platform: "linux", musePath: "muse" });
+    await accounts.createAccount("work");
+    await accounts.createAccount("personal");
     const probe: FactoryProbe = { targets: [], exits: [] };
-    const { base } = await start(connection, { hostFactory: fakeFactory(connection, probe), aonia });
+    const { base } = await start(connection, { hostFactory: fakeFactory(connection, probe), accounts });
 
     await send(base, "/api/sessions", { cwd: "/work/proj", accountId: "work" });
     await send(base, "/api/sessions", { cwd: "/work/proj", accountId: "personal" });
@@ -1532,8 +1532,8 @@ describe("MuseGuiServer", () => {
 
   it("rejects a session for an account that does not exist", async () => {
     const connection = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const { base } = await start(connection, { aonia: createAonia({ home, platform: "linux", musePath: "muse" }) });
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const { base } = await start(connection, { accounts: createAccounts({ home, platform: "linux", musePath: "muse" }) });
     const res = await send(base, "/api/sessions", { cwd: "/work/proj", accountId: "ghost" });
     assert.equal(res.status, 400);
   });
@@ -1541,11 +1541,11 @@ describe("MuseGuiServer", () => {
   it("puts a session back on its account after the host is forgotten", async () => {
     const connection = new FakeConnection();
     connection.replies.set("session/start", { session: { sessionId: "s1" } });
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const aonia = createAonia({ home, platform: "linux", musePath: "muse" });
-    await aonia.createProfile("work");
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const accounts = createAccounts({ home, platform: "linux", musePath: "muse" });
+    await accounts.createAccount("work");
     const probe: FactoryProbe = { targets: [], exits: [] };
-    const { base } = await start(connection, { hostFactory: fakeFactory(connection, probe), aonia });
+    const { base } = await start(connection, { hostFactory: fakeFactory(connection, probe), accounts });
     await send(base, "/api/sessions", { cwd: "/work/proj", accountId: "work" });
     // Ask for the transcript by session id after dropping the in-memory host map is exercised by managerForSession;
     // here assert the session row carries the account so a rebuild has what it needs.
@@ -1553,10 +1553,10 @@ describe("MuseGuiServer", () => {
     assert.ok(listed.sessions?.length > 0, "sessions listed");
   });
 
-  it("lists, creates, renames and removes accounts through aonia", async () => {
+  it("lists, creates, renames and removes accounts through the accounts module", async () => {
     const connection = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const { base } = await start(connection, { aonia: createAonia({ home, platform: "linux", musePath: "muse" }) });
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const { base } = await start(connection, { accounts: createAccounts({ home, platform: "linux", musePath: "muse" }) });
 
     assert.deepEqual((await get(base, "/api/accounts")).accounts, []);
 
@@ -1581,18 +1581,18 @@ describe("MuseGuiServer", () => {
 
   it("rejects a bad account id and a duplicate", async () => {
     const connection = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const { base } = await start(connection, { aonia: createAonia({ home, platform: "linux", musePath: "muse" }) });
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const { base } = await start(connection, { accounts: createAccounts({ home, platform: "linux", musePath: "muse" }) });
     assert.equal((await send(base, "/api/accounts", { id: "Not Valid" })).status, 400);
     await send(base, "/api/accounts", { id: "work" });
     assert.equal((await send(base, "/api/accounts", { id: "work" })).status, 409);
   });
 
-  it("reports metaApiKeyInherited from the aonia doctor finding", async () => {
+  it("reports metaApiKeyInherited from the accounts doctor finding", async () => {
     const connection = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
     const { base } = await start(connection, {
-      aonia: createAonia({ home, platform: "linux", musePath: "muse", env: { META_API_KEY: "x" } }),
+      accounts: createAccounts({ home, platform: "linux", musePath: "muse", env: { META_API_KEY: "x" } }),
     });
     const res = await get(base, "/api/accounts/health");
     assert.equal(res.metaApiKeyInherited, true);
@@ -1600,9 +1600,9 @@ describe("MuseGuiServer", () => {
 
   it("reports metaApiKeyInherited false when META_API_KEY is not set", async () => {
     const connection = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
     const { base } = await start(connection, {
-      aonia: createAonia({ home, platform: "linux", musePath: "muse", env: {} }),
+      accounts: createAccounts({ home, platform: "linux", musePath: "muse", env: {} }),
     });
     const res = await get(base, "/api/accounts/health");
     assert.equal(res.metaApiKeyInherited, false);
@@ -1610,9 +1610,9 @@ describe("MuseGuiServer", () => {
 
   it("logs an account in: resolves url and code from staged stdout, through the server's own muse path", async () => {
     const connection = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const aonia = createAonia({ home, platform: "linux", musePath: "muse" });
-    await aonia.createProfile("work");
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const accounts = createAccounts({ home, platform: "linux", musePath: "muse" });
+    await accounts.createAccount("work");
     const calls: { command: string; args: string[]; env: Record<string, string> }[] = [];
     const children: FakeLoginChild[] = [];
     const loginSpawn: LoginSpawn = (command, args, opts) => {
@@ -1624,9 +1624,9 @@ describe("MuseGuiServer", () => {
       });
       return child as unknown as LoginChild;
     };
-    // aonia's own musePath stays the bare default "muse"; the server carries a different configured
-    // path, so the route must resolve through the server's own musePath rather than aonia's.
-    const { base } = await start(connection, { musePath: "/custom/muse", aonia, loginSpawn });
+    // the accounts module's own musePath stays the bare default "muse"; the server carries a different configured
+    // path, so the route must resolve through the server's own musePath rather than the accounts module's.
+    const { base } = await start(connection, { musePath: "/custom/muse", accounts, loginSpawn });
 
     const res = await send(base, "/api/accounts/work/login", undefined);
     assert.equal(res.status, 200);
@@ -1638,9 +1638,9 @@ describe("MuseGuiServer", () => {
 
   it("returns a WSL fallback for the login route instead of spawning", async () => {
     const connection = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const aonia = createAonia({ home, platform: "linux", musePath: "muse" });
-    await aonia.createProfile("work");
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const accounts = createAccounts({ home, platform: "linux", musePath: "muse" });
+    await accounts.createAccount("work");
     let spawned = false;
     const loginSpawn: LoginSpawn = () => {
       spawned = true;
@@ -1649,30 +1649,30 @@ describe("MuseGuiServer", () => {
     const { base } = await start(connection, {
       platform: "win32",
       musePath: "/home/dev/.local/bin/muse",
-      aonia,
+      accounts,
       loginSpawn,
     });
 
     const res = await send(base, "/api/accounts/work/login", undefined);
     assert.equal(res.status, 200);
     assert.deepEqual(res.json, {
-      fallback: "In-app login is not available when Muse runs in WSL. Log in from a terminal with: aonia login work.",
+      fallback: "In-app login is not available when Muse runs in WSL. Log in from a terminal with: XDG_CONFIG_HOME and XDG_DATA_HOME set to that account's folders, then muse login.",
     });
     assert.equal(spawned, false);
   });
 
   it("kills the first login child when a second login call arrives for the same account", async () => {
     const connection = new FakeConnection();
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const aonia = createAonia({ home, platform: "linux", musePath: "muse" });
-    await aonia.createProfile("work");
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const accounts = createAccounts({ home, platform: "linux", musePath: "muse" });
+    await accounts.createAccount("work");
     const children: FakeLoginChild[] = [];
     const loginSpawn: LoginSpawn = () => {
       const child = new FakeLoginChild();
       children.push(child);
       return child as unknown as LoginChild;
     };
-    const { base } = await start(connection, { aonia, loginSpawn });
+    const { base } = await start(connection, { accounts, loginSpawn });
 
     const first = send(base, "/api/accounts/work/login", undefined);
     await waitFor(() => children.length === 1, "first login child to spawn");
@@ -1694,8 +1694,8 @@ describe("MuseGuiServer", () => {
   it("sets a project's default account", async () => {
     const connection = new FakeConnection();
     connection.replies.set("session/start", { session: { sessionId: "s1" } });
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const { base } = await start(connection, { aonia: createAonia({ home, platform: "linux", musePath: "muse" }) });
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const { base } = await start(connection, { accounts: createAccounts({ home, platform: "linux", musePath: "muse" }) });
     await send(base, "/api/sessions", { cwd: "/work/proj" });
     const res = await send(base, "/api/projects/default-account", { cwd: "/work/proj", accountId: "work" }, "PATCH");
     assert.equal(res.status, 200);
@@ -1708,10 +1708,10 @@ describe("MuseGuiServer", () => {
     // host that reused one id across two sessions would leak the first session's account onto the second.
     let n = 0;
     connection.replies.set("session/start", () => ({ session: { sessionId: `s${++n}` } }));
-    const home = await mkdtemp(join(tmpdir(), "musegui-aonia-"));
-    const aonia = createAonia({ home, platform: "linux", musePath: "muse" });
-    await aonia.createProfile("work");
-    const { base } = await start(connection, { hostFactory: fakeFactory(connection), aonia });
+    const home = await mkdtemp(join(tmpdir(), "musegui-accounts-"));
+    const accounts = createAccounts({ home, platform: "linux", musePath: "muse" });
+    await accounts.createAccount("work");
+    const { base } = await start(connection, { hostFactory: fakeFactory(connection), accounts });
 
     const created = await send(base, "/api/sessions", { cwd: "/work/proj", accountId: "work" });
     assert.equal(created.json.session.accountId, "work");

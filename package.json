@@ -1,7 +1,7 @@
 {
   "name": "musegui",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Muse Code GUI - open-source desktop + web ADE for Meta's Muse Code CLI",
   "workspaces": [
     "packages/*",

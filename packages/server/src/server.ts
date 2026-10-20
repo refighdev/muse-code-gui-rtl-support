@@ -71,9 +71,9 @@ import {
   type TailEvent,
   type ViewTailTiming,
 } from "./viewTail.js";
-import { AoniaError, createAonia, parseLoginOutput, type Aonia, type Profile } from "@harjjotsinghh/aonia";
+import { AccountError, createAccounts, parseLoginOutput, type Account, type Accounts } from "./accounts.js";
 
-export const MUSEGUI_VERSION = "0.1.0";
+export const MUSEGUI_VERSION = "0.1.1";
 
 export interface HostExit {
   code: number | null;
@@ -167,8 +167,8 @@ export interface ServerOptions {
   platform?: string;
   distro?: string;
   musePath?: string | null;
-  /** Named Muse profiles. Defaults to a real aonia over ~/.aonia; injected in tests. */
-  aonia?: Aonia;
+  /** Named Muse accounts. Defaults to the real store under ~/.musegui/accounts; injected in tests. */
+  accounts?: Accounts;
   /** How eagerly a quiet session's view is paged; the defaults suit a real Muse, tests shorten them. */
   tailTiming?: Partial<ViewTailTiming>;
   /** On Windows: `native` runs Windows Muse, `wsl` runs Muse in WSL, `auto` (the default) prefers native once installed. */
@@ -747,7 +747,7 @@ interface PreparedAttachment {
 export class MuseGuiServer {
   private readonly server: Server;
   private readonly store: MuseGuiStore;
-  private readonly aonia: Aonia;
+  private readonly accounts: Accounts;
   private readonly hosts = new Map<string, ManagedHost>();
   private readonly starting = new Map<string, Promise<ManagedHost>>();
   /** Restarts queued by a settings flip, oldest first. Hosts are only acquired past the tail. */
@@ -771,7 +771,7 @@ export class MuseGuiServer {
   private readonly sshHomeCache = new Map<string, { home: string; at: number }>();
   /** The newest subscription window any host reported; `usage/changed` carries no session, so it lives here. */
   private planUsage: SubscriptionUsage | null = null;
-  /** The newest window per account, keyed by aonia profile id. The default login is not keyed here. */
+  /** The newest window per account, keyed by account id. The default login is not keyed here. */
   private readonly planUsageByAccount = new Map<string, SubscriptionUsage>();
   /** The reasoning effort each session is known to be running at, so a turn only re-sets it when it changes. */
   private readonly effortApplied = new Map<string, ReasoningEffort>();
@@ -808,7 +808,7 @@ export class MuseGuiServer {
       | "opener"
       | "exec"
       | "findNativeMuse"
-      | "aonia"
+      | "accounts"
       | "loginSpawn"
       | "tailTiming"
     >
@@ -867,7 +867,7 @@ export class MuseGuiServer {
     );
     // Catching up is a mode the user switches on; until then the tail is inert.
     this.tail.setEnabled(this.store.getFeedSettings().catchUp);
-    this.aonia = options.aonia ?? createAonia(this.options.musePath ? { musePath: this.options.musePath } : {});
+    this.accounts = options.accounts ?? createAccounts(this.options.musePath ? { musePath: this.options.musePath } : {});
     this.server = createServer((req, res) => {
       void this.route(req, res).catch((error) => this.fail(res, 500, String(error)));
     });
@@ -1643,7 +1643,7 @@ export class MuseGuiServer {
       const name = str(body["name"]);
       const seed = body["seedFromDefault"] === true;
       try {
-        const profile = await this.aonia.createProfile(id, {
+        const profile = await this.accounts.createAccount(id, {
           ...(name ? { name } : {}),
           seedFromDefault: seed,
         });
@@ -1661,7 +1661,7 @@ export class MuseGuiServer {
         throw new HttpError(400, "name is required.");
       }
       try {
-        await this.aonia.renameProfile(id, name);
+        await this.accounts.renameAccount(id, name);
       } catch (error) {
         throw this.accountError(error);
       }
@@ -1671,7 +1671,7 @@ export class MuseGuiServer {
     if (method === "DELETE" && path.startsWith("/api/accounts/")) {
       const id = decodeURIComponent(path.slice("/api/accounts/".length));
       try {
-        await this.aonia.removeProfile(id);
+        await this.accounts.removeAccount(id);
       } catch (error) {
         throw this.accountError(error);
       }
@@ -1679,7 +1679,7 @@ export class MuseGuiServer {
       return true;
     }
     if (method === "GET" && path === "/api/accounts/health") {
-      const findings = await this.aonia.doctor();
+      const findings = await this.accounts.doctor();
       const inherited = findings.some((f) => f.code === "meta_api_key_inherited");
       this.json(res, 200, { metaApiKeyInherited: inherited });
       return true;
@@ -1688,13 +1688,13 @@ export class MuseGuiServer {
       const id = decodeURIComponent(path.slice("/api/accounts/".length, path.length - "/login".length));
       if ((await this.museRuntime()) === "wsl") {
         this.json(res, 200, {
-          fallback: `In-app login is not available when Muse runs in WSL. Log in from a terminal with: aonia login ${id}.`,
+          fallback: `In-app login is not available when Muse runs in WSL. Log in from a terminal with: XDG_CONFIG_HOME and XDG_DATA_HOME set to that account's folders, then muse login.`,
         });
         return true;
       }
-      let profile: Profile;
+      let profile: Account;
       try {
-        profile = await this.aonia.getProfile(id);
+        profile = await this.accounts.getAccount(id);
       } catch (error) {
         throw this.accountError(error);
       }
@@ -2506,7 +2506,7 @@ export class MuseGuiServer {
     // A new session's view is empty, so the start of it is somewhere to page from.
     this.tail.anchor(started.sessionId, null);
     if (accountId) {
-      await this.aonia.touch(accountId).catch(() => undefined);
+      await this.accounts.touch(accountId).catch(() => undefined);
     }
     this.liveFor(started.sessionId);
     this.sessionsChanged();
@@ -3284,10 +3284,10 @@ export class MuseGuiServer {
   }
 
   private async accountList(): Promise<Record<string, unknown>[]> {
-    const profiles = await this.aonia.listProfiles();
+    const profiles = await this.accounts.listAccounts();
     return Promise.all(
       profiles.map(async (profile) => {
-        const identity = await this.aonia.identityOf(profile);
+        const identity = await this.accounts.identityOf(profile);
         return {
           id: profile.id,
           name: profile.name,
@@ -3299,10 +3299,10 @@ export class MuseGuiServer {
     );
   }
 
-  /** Turns an aonia error into the right HTTP status: a duplicate is 409, a bad id or missing profile is 400. */
+  /** Turns an accounts error into the right HTTP status: a duplicate is 409, a bad id or missing profile is 400. */
   private accountError(error: unknown): HttpError {
-    if (error instanceof AoniaError) {
-      if (error.code === "profile_exists") {
+    if (error instanceof AccountError) {
+      if (error.code === "account_exists") {
         return new HttpError(409, error.message);
       }
       return new HttpError(400, error.message);
@@ -3315,8 +3315,8 @@ export class MuseGuiServer {
    * The child keeps running after that (the user finishes the sign-in in a browser); it exits on its
    * own. A second call for the same account id kills and replaces whatever is already running for it.
    */
-  private async runLogin(id: string, profile: Profile): Promise<{ url: string; code: string | null }> {
-    const command = this.aonia.loginCommand(profile);
+  private async runLogin(id: string, profile: Account): Promise<{ url: string; code: string | null }> {
+    const command = this.accounts.loginCommand(profile);
     const resolved = command.command === "muse" && this.options.musePath ? this.options.musePath : command.command;
     const previous = this.loginChildren.get(id);
     if (previous) {
@@ -3379,11 +3379,11 @@ export class MuseGuiServer {
     if (accountId) {
       let profile;
       try {
-        profile = await this.aonia.getProfile(accountId);
+        profile = await this.accounts.getAccount(accountId);
       } catch (error) {
         throw new HttpError(400, error instanceof Error ? error.message : `Unknown account "${accountId}".`);
       }
-      profileEnv = this.aonia.envFor(profile);
+      profileEnv = this.accounts.envFor(profile);
     }
     // Sandbox posture is fixed at spawn: every host carries the settings as they stand now.
     const sandboxDisabled = this.store.getSandboxSettings().disabled;

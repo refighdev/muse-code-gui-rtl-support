@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+### Changed
+
+- **Accounts are now built in.** Named Muse logins (several accounts on one machine, a default per project) no longer depend on a third-party package. Each account is a private pair of folders under `~/.musegui/accounts` that `muse` is pointed at. Accounts created by other tools are not picked up; create them again from the account picker.
+- Removed the last third-party package that was specific to this app's origin; the dependency tree is now only general-purpose libraries.
+
 ## 0.1.0
 
 ### New

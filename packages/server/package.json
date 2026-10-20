@@ -1,6 +1,6 @@
 {
   "name": "@musegui/server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Muse Code GUI local server: REST + SSE bridge between the shared UI and Muse MSP hosts",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -13,7 +13,6 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@harjjotsinghh/aonia": "^0.1.0",
     "@musegui/daemon": "*"
   },
   "devDependencies": {
