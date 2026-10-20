@@ -1,23 +1,21 @@
 # Maintainer: refighdev
-# Unofficial Helicon build with right-to-left text support, from the fork's GitHub Releases.
-pkgname=helicon-rtl-bin
-_name=Helicon
-_tag=0.22.3-rtl.1
-pkgver=${_tag//-/.}
+pkgname=muse-code-gui-bin
+_name=MuseCodeGUI
+pkgver=0.1.1
 pkgrel=1
-pkgdesc='Unofficial desktop GUI for the Muse Code CLI, with RTL (Persian/Arabic/Hebrew) text support'
+pkgdesc='Desktop GUI for the Muse Code CLI, with right-to-left (Persian/Arabic/Hebrew) text support (AppImage release)'
 arch=('x86_64')
 url='https://github.com/refighdev/muse-code-gui-rtl-support'
 license=('MIT')
 depends=('fuse2' 'zlib' 'hicolor-icon-theme')
-optdepends=('muse-code-bin: the Muse Code CLI that Helicon drives')
-provides=('helicon')
-conflicts=('helicon' 'helicon-bin')
+optdepends=('muse-code-bin: the Muse Code CLI this app drives')
+provides=('muse-code-gui')
+conflicts=('muse-code-gui')
 options=('!strip' '!debug')
-_appimage="${_name}_${_tag}_amd64.AppImage"
-source=("${_appimage}::${url}/releases/download/v${_tag}/${_appimage}")
+_appimage="${_name}_${pkgver}_amd64.AppImage"
+source=("${_appimage}::${url}/releases/download/v${pkgver}/${_appimage}")
 noextract=("${_appimage}")
-sha256sums=('4ee00c6893065588e0fdf4964a94dbd079e7e90a1a5593bb1eee74814b59cadb')
+sha256sums=('3876df19a59e6ab8e1b3a2024bd51d54810f41d95ab81b266e10d3c6500739f8')
 
 build() {
   chmod +x "${_appimage}"
@@ -29,23 +27,23 @@ package() {
   install -Dm755 "${_appimage}" "${pkgdir}/opt/${pkgname}/${_name}.AppImage"
 
   install -d "${pkgdir}/usr/bin"
-  cat > "${pkgdir}/usr/bin/helicon" <<'WRAP'
+  cat > "${pkgdir}/usr/bin/muse-code-gui" <<'WRAP'
 #!/bin/sh
-exec /opt/helicon-rtl-bin/Helicon.AppImage "$@"
+exec /opt/muse-code-gui-bin/MuseCodeGUI.AppImage "$@"
 WRAP
-  chmod 755 "${pkgdir}/usr/bin/helicon"
+  chmod 755 "${pkgdir}/usr/bin/muse-code-gui"
 
   local icon
   icon=$(find squashfs-root -maxdepth 1 -name '*.png' 2>/dev/null | head -n1)
-  [ -n "$icon" ] && install -Dm644 "$icon" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/helicon.png"
+  [ -n "$icon" ] && install -Dm644 "$icon" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/muse-code-gui.png"
 
-  install -Dm644 /dev/stdin "${pkgdir}/usr/share/applications/helicon.desktop" <<'DESK'
+  install -Dm644 /dev/stdin "${pkgdir}/usr/share/applications/muse-code-gui.desktop" <<'DESK'
 [Desktop Entry]
 Type=Application
-Name=Helicon (RTL)
+Name=Muse Code GUI
 Comment=Desktop GUI for Muse Code, with RTL support
-Exec=helicon
-Icon=helicon
+Exec=muse-code-gui
+Icon=muse-code-gui
 Categories=Development;
 Terminal=false
 DESK

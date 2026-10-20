@@ -29,7 +29,7 @@ curl -fsSL https://dev.meta.ai/install.sh | bash
 muse login
 ```
 
-**Linux (AppImage):** download `MuseCodeGUI_*_amd64.AppImage` from the [latest release](../../releases/latest), then
+**Linux (AppImage):** download `MuseCodeGUI_*_amd64.AppImage` (Windows: the `-setup.exe`; macOS: the `.dmg`) from the [latest release](../../releases/latest), then
 
 ```bash
 chmod +x MuseCodeGUI_*_amd64.AppImage && ./MuseCodeGUI_*_amd64.AppImage
@@ -37,7 +37,7 @@ chmod +x MuseCodeGUI_*_amd64.AppImage && ./MuseCodeGUI_*_amd64.AppImage
 
 Some distributions need `libfuse2`. The app bundles its own Node.js.
 
-**Arch Linux:** build the package from the AppImage with the `PKGBUILD` in [`packaging/arch`](packaging/arch) (`makepkg -si`).
+**Arch Linux:** build the package from the AppImage with the `PKGBUILD` in [`packaging/arch`](packaging/arch) (`makepkg -si`), installs the `muse-code-gui` command.
 
 ## Develop
 
