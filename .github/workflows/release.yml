@@ -35,7 +35,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Muse Code GUI ${{ github.ref_name }}"
-          releaseBody: "Right-to-left (Persian, Arabic, Hebrew) support throughout. Bundles Node.js, so the only requirement is the Muse CLI with muse login (Muse for Windows natively, or inside WSL2). Windows and macOS builds are not code signed or notarized: on Windows click More info, then Run anyway; on macOS 15 or later use System Settings > Privacy & Security > Open Anyway (or run: xattr -dr com.apple.quarantine /Applications/MuseCodeGUI.app). Unofficial; not affiliated with Meta."
+          releaseBody: "Right-to-left (Persian, Arabic, Hebrew) support throughout. Bundles Node.js, so the only requirement is the Muse CLI with muse login (Muse for Windows natively, or inside WSL2). Windows and macOS builds are not code signed or notarized: on Windows click More info, then Run anyway; on macOS 15 or later use System Settings > Privacy & Security > Open Anyway (or run: xattr -dr com.apple.quarantine /Applications/MuseCodeGUI.app). Install steps for every platform are in the README. Unofficial; not affiliated with Meta."
           releaseDraft: false
           # A full release, so the updater's releases/latest/download/latest.json always points at it.
           prerelease: false
@@ -75,7 +75,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Muse Code GUI ${{ github.ref_name }}"
-          releaseBody: "Right-to-left (Persian, Arabic, Hebrew) support throughout. Bundles Node.js, so the only requirement is the Muse CLI with muse login (Muse for Windows natively, or inside WSL2). Windows and macOS builds are not code signed or notarized: on Windows click More info, then Run anyway; on macOS 15 or later use System Settings > Privacy & Security > Open Anyway (or run: xattr -dr com.apple.quarantine /Applications/MuseCodeGUI.app). Unofficial; not affiliated with Meta."
+          releaseBody: "Right-to-left (Persian, Arabic, Hebrew) support throughout. Bundles Node.js, so the only requirement is the Muse CLI with muse login (Muse for Windows natively, or inside WSL2). Windows and macOS builds are not code signed or notarized: on Windows click More info, then Run anyway; on macOS 15 or later use System Settings > Privacy & Security > Open Anyway (or run: xattr -dr com.apple.quarantine /Applications/MuseCodeGUI.app). Install steps for every platform are in the README. Unofficial; not affiliated with Meta."
           releaseDraft: false
           # A full release, so the updater's releases/latest/download/latest.json always points at it.
           prerelease: false
@@ -112,7 +112,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Muse Code GUI ${{ github.ref_name }}"
-          releaseBody: "Right-to-left (Persian, Arabic, Hebrew) support throughout. Bundles Node.js, so the only requirement is the Muse CLI with muse login (Muse for Windows natively, or inside WSL2). Windows and macOS builds are not code signed or notarized: on Windows click More info, then Run anyway; on macOS 15 or later use System Settings > Privacy & Security > Open Anyway (or run: xattr -dr com.apple.quarantine /Applications/MuseCodeGUI.app). Unofficial; not affiliated with Meta."
+          releaseBody: "Right-to-left (Persian, Arabic, Hebrew) support throughout. Bundles Node.js, so the only requirement is the Muse CLI with muse login (Muse for Windows natively, or inside WSL2). Windows and macOS builds are not code signed or notarized: on Windows click More info, then Run anyway; on macOS 15 or later use System Settings > Privacy & Security > Open Anyway (or run: xattr -dr com.apple.quarantine /Applications/MuseCodeGUI.app). Install steps for every platform are in the README. Unofficial; not affiliated with Meta."
           releaseDraft: false
           # A full release, so the updater's releases/latest/download/latest.json always points at it.
           prerelease: false

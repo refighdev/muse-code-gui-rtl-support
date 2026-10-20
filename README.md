@@ -29,15 +29,37 @@ curl -fsSL https://dev.meta.ai/install.sh | bash
 muse login
 ```
 
-**Linux (AppImage):** download `MuseCodeGUI_*_amd64.AppImage` (Windows: the `-setup.exe`; macOS: the `.dmg`) from the [latest release](../../releases/latest), then
+Download the installer for your system from the [latest release](../../releases/latest).
+
+**Windows:** run `MuseCodeGUI_*_x64-setup.exe`. The installer is not code signed yet, so SmartScreen may say "Windows protected your PC": click **More info**, then **Run anyway**.
+
+**macOS:** open `MuseCodeGUI_*_universal.dmg` (Apple Silicon and Intel) and drag the app to Applications. The app is not notarized yet, so the first launch is blocked with "Apple could not verify MuseCodeGUI...". Remove the quarantine flag once, then open it normally:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/MuseCodeGUI.app
+```
+
+(On macOS 15 and later you can instead open the app once, then go to System Settings > Privacy & Security and press **Open Anyway** in the Security section.)
+
+**Linux:** download `MuseCodeGUI_*_amd64.AppImage`, then
 
 ```bash
 chmod +x MuseCodeGUI_*_amd64.AppImage && ./MuseCodeGUI_*_amd64.AppImage
 ```
 
-Some distributions need `libfuse2`. The app bundles its own Node.js.
+Some distributions need `libfuse2`.
 
-**Arch Linux:** build the package from the AppImage with the `PKGBUILD` in [`packaging/arch`](packaging/arch) (`makepkg -si`), installs the `muse-code-gui` command.
+**Arch Linux:** build the package from the AppImage with the `PKGBUILD` in [`packaging/arch`](packaging/arch) (`makepkg -si`); it installs the `muse-code-gui` command.
+
+**VS Code / Cursor:** download `musegui.vsix` from the release and use *Extensions > ... > Install from VSIX...*.
+
+The app bundles its own Node.js and updates itself from this repository's Releases.
+
+<div dir="rtl">
+
+**نصب (فارسی):** فایل مناسب سیستم‌تان را از صفحهٔ Releases بگیرید. در **Windows** اگر هشدار SmartScreen آمد «More info» و بعد «Run anyway» را بزنید. در **macOS** بعد از کشیدن برنامه به Applications، یک بار دستور `xattr` بالا را در Terminal اجرا کنید و بعد برنامه را معمولی باز کنید. در **Linux** فایل AppImage را اجرایی کنید و اجرا کنید.
+
+</div>
 
 ## Develop
 
