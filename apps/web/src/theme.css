@@ -1,0 +1,860 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
+@import "@fontsource-variable/newsreader/opsz.css";
+
+@source "../../../packages/ui/src";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Muse Code GUI tokens. Restrained palette: cool-tinted neutrals (hue 255) plus one blue accent,
+ * the blue of the app icon, reserved for action, live state and focus. Every text token
+ * clears 4.5:1 on every surface in both themes (checked with a WCAG script).
+ */
+:root {
+  color-scheme: light;
+  --bg: oklch(0.992 0.002 255);
+  --bg-sidebar: oklch(0.967 0.004 255);
+  --bg-raised: oklch(1 0 0);
+  --bg-sunken: oklch(0.962 0.004 255);
+  --bg-hover: oklch(0.25 0.02 255 / 0.05);
+  --bg-active: oklch(0.25 0.02 255 / 0.085);
+  --bg-inverse: oklch(0.22 0.01 255);
+  --fg-inverse: oklch(0.985 0.002 255);
+  --border: oklch(0.25 0.02 255 / 0.1);
+  --border-strong: oklch(0.25 0.02 255 / 0.2);
+  --fg: oklch(0.2 0.01 255);
+  --fg-muted: oklch(0.43 0.012 255);
+  --fg-subtle: oklch(0.5 0.012 255);
+  --accent: oklch(0.55 0.19 257);
+  --accent-hover: oklch(0.5 0.19 257);
+  --accent-fg: oklch(0.99 0 0);
+  --accent-text: oklch(0.5 0.18 257);
+  --accent-soft: oklch(0.55 0.19 257 / 0.1);
+  --warn: oklch(0.74 0.16 70);
+  --warn-text: oklch(0.5 0.12 65);
+  --warn-soft: oklch(0.82 0.15 80 / 0.18);
+  --warn-line: oklch(0.7 0.15 70 / 0.45);
+  --danger: oklch(0.58 0.21 27);
+  --danger-text: oklch(0.52 0.19 27);
+  --danger-soft: oklch(0.62 0.2 27 / 0.1);
+  --ok: oklch(0.62 0.15 150);
+  --ok-text: oklch(0.47 0.12 150);
+  --diff-add: oklch(0.7 0.15 150 / 0.16);
+  --diff-del: oklch(0.65 0.2 27 / 0.12);
+  --scrollbar: oklch(0.25 0.02 255 / 0.18);
+  --sh-class: oklch(0.5 0.14 300);
+  --sh-identifier: oklch(0.3 0.02 255);
+  --sh-sign: oklch(0.5 0.012 255);
+  --sh-property: oklch(0.45 0.12 240);
+  --sh-entity: oklch(0.48 0.13 200);
+  --sh-jsxliterals: oklch(0.45 0.12 300);
+  --sh-string: oklch(0.47 0.12 150);
+  --sh-keyword: oklch(0.5 0.17 20);
+  --sh-comment: oklch(0.55 0.01 255);
+  /* Elevation: a hairline ring plus a short layered shadow, never a wide blur. */
+  --elev-btn: 0 0 0 1px var(--border-strong), 0 1px 2px oklch(0.2 0.02 255 / 0.06);
+  --elev-card: 0 0 0 1px var(--border), 0 1px 2px oklch(0.2 0.02 255 / 0.04), 0 2px 6px oklch(0.2 0.02 255 / 0.04);
+  /* First-run folder art (Rare UI FolderComponent), in the accent family. */
+  --folder-back: oklch(0.7 0.13 250);
+  --folder-flap: oklch(0.6 0.15 254 / 0.55);
+  --folder-edge: oklch(0.84 0.08 245);
+  --folder-page: oklch(0.992 0 0);
+  --folder-page-edge: oklch(0.9 0.005 255);
+  --folder-line: oklch(0.87 0.006 255);
+  /* The Windows 11 caption close red, the same in both themes like the native button. */
+  --caption-close: oklch(0.536 0.191 30.1);
+  /* A thread waiting on the user's answer, T3 Code's indigo. */
+  --status-input: oklch(0.52 0.17 285);
+  /* Data colors for the context breakdown: distinct hues at even lightness. */
+  --chart-1: oklch(0.6 0.17 257);
+  --chart-2: oklch(0.64 0.13 170);
+  --chart-3: oklch(0.72 0.15 75);
+  --chart-4: oklch(0.6 0.17 305);
+  --chart-5: oklch(0.64 0.17 40);
+  --chart-6: oklch(0.62 0.02 255);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: oklch(0.178 0.004 255);
+  --bg-sidebar: oklch(0.152 0.004 255);
+  --bg-raised: oklch(0.215 0.005 255);
+  --bg-sunken: oklch(0.148 0.004 255);
+  --bg-hover: oklch(0.98 0.005 255 / 0.05);
+  --bg-active: oklch(0.98 0.005 255 / 0.085);
+  --bg-inverse: oklch(0.95 0.003 255);
+  --fg-inverse: oklch(0.17 0.004 255);
+  --border: oklch(0.98 0.005 255 / 0.08);
+  --border-strong: oklch(0.98 0.005 255 / 0.15);
+  --fg: oklch(0.955 0.003 255);
+  --fg-muted: oklch(0.76 0.008 255);
+  --fg-subtle: oklch(0.66 0.009 255);
+  --accent: oklch(0.58 0.18 257);
+  --accent-hover: oklch(0.63 0.17 257);
+  --accent-fg: oklch(0.99 0 0);
+  --accent-text: oklch(0.76 0.12 252);
+  --accent-soft: oklch(0.62 0.17 257 / 0.16);
+  --warn: oklch(0.8 0.15 75);
+  --warn-text: oklch(0.83 0.13 80);
+  --warn-soft: oklch(0.8 0.15 75 / 0.12);
+  --warn-line: oklch(0.8 0.15 75 / 0.35);
+  --danger: oklch(0.68 0.19 25);
+  --danger-text: oklch(0.74 0.15 25);
+  --danger-soft: oklch(0.68 0.19 25 / 0.12);
+  --ok: oklch(0.74 0.15 155);
+  --ok-text: oklch(0.8 0.13 155);
+  --diff-add: oklch(0.7 0.14 150 / 0.14);
+  --diff-del: oklch(0.65 0.18 25 / 0.14);
+  --scrollbar: oklch(0.98 0.005 255 / 0.16);
+  --sh-class: oklch(0.78 0.11 300);
+  --sh-identifier: oklch(0.9 0.01 255);
+  --sh-sign: oklch(0.68 0.01 255);
+  --sh-property: oklch(0.8 0.1 235);
+  --sh-entity: oklch(0.8 0.1 200);
+  --sh-jsxliterals: oklch(0.78 0.11 300);
+  --sh-string: oklch(0.8 0.12 150);
+  --sh-keyword: oklch(0.76 0.13 20);
+  --sh-comment: oklch(0.62 0.01 255);
+  /* In dark mode the ring turns into a faint light edge that melts into the shadow. */
+  --elev-btn: 0 0 0 1px oklch(1 0 0 / 0.1), 0 1px 2px oklch(0 0 0 / 0.3);
+  --elev-card: 0 0 0 1px oklch(1 0 0 / 0.09), 0 1px 2px oklch(0 0 0 / 0.2), 0 2px 6px oklch(0 0 0 / 0.2);
+  --folder-back: oklch(0.52 0.14 256);
+  --folder-flap: oklch(0.42 0.13 256 / 0.6);
+  --folder-edge: oklch(0.68 0.11 250);
+  --folder-page: oklch(0.29 0.006 255);
+  --folder-page-edge: oklch(0.37 0.008 255);
+  --folder-line: oklch(0.44 0.01 255);
+  --status-input: oklch(0.76 0.12 285);
+  --chart-1: oklch(0.68 0.15 257);
+  --chart-2: oklch(0.72 0.12 170);
+  --chart-3: oklch(0.8 0.14 78);
+  --chart-4: oklch(0.7 0.15 305);
+  --chart-5: oklch(0.72 0.15 42);
+  --chart-6: oklch(0.62 0.015 255);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-sidebar: var(--bg-sidebar);
+  --color-raised: var(--bg-raised);
+  --color-sunken: var(--bg-sunken);
+  --color-hover: var(--bg-hover);
+  --color-active: var(--bg-active);
+  --color-inverse: var(--bg-inverse);
+  --color-inverse-fg: var(--fg-inverse);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-text: var(--accent-text);
+  --color-accent-soft: var(--accent-soft);
+  --color-warn: var(--warn);
+  --color-warn-text: var(--warn-text);
+  --color-warn-soft: var(--warn-soft);
+  --color-warn-line: var(--warn-line);
+  --color-danger: var(--danger);
+  --color-danger-text: var(--danger-text);
+  --color-danger-soft: var(--danger-soft);
+  --color-ok: var(--ok);
+  --color-ok-text: var(--ok-text);
+  --color-diff-add: var(--diff-add);
+  --color-diff-del: var(--diff-del);
+  --color-caption-close: var(--caption-close);
+  --color-status-input: var(--status-input);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, "Segoe UI Variable Text", "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --font-display: "Newsreader Variable", "Newsreader", "Iowan Old Style", Georgia, serif;
+  /* Window caption glyphs, only drawn in the Windows desktop shell. */
+  --font-caption: "Segoe Fluent Icons", "Segoe MDL2 Assets", sans-serif;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.375rem;
+  --text-md: 0.9375rem;
+  --text-md--line-height: 1.6;
+  --text-lg: 1.0625rem;
+  --text-lg--line-height: 1.5rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.625rem;
+  --text-2xl--line-height: 2.125rem;
+  --text-3xl: 2.125rem;
+  --text-3xl--line-height: 2.5rem;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --shadow-pop: 0 0 0 1px var(--border-strong), 0 8px 12px -8px oklch(0 0 0 / 0.3), 0 2px 4px -1px oklch(0 0 0 / 0.12);
+  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.06), 0 0 0 1px var(--border);
+  --shadow-btn: var(--elev-btn);
+  --shadow-card: var(--elev-card);
+}
+
+/* Semantic stacking order; never ad hoc 999s. */
+:root {
+  --z-sticky: 10;
+  --z-resize: 20;
+  --z-dropdown: 50;
+  --z-overlay: 60;
+  --z-modal: 70;
+  --z-titlebar: 75;
+  --z-toast: 80;
+  --z-tooltip: 90;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    max-height: 100%;
+  }
+
+  html {
+    overflow: hidden;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+  }
+
+  button,
+  [role="button"] {
+    cursor: default;
+    user-select: none;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--accent) 28%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar) transparent;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+    font-feature-settings: "calt" 0;
+  }
+
+  input,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  textarea {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    field-sizing: fixed;
+  }
+
+  textarea::placeholder,
+  input::placeholder {
+    color: var(--fg-subtle);
+  }
+}
+
+@layer components {
+  /* Running indicator: a quarter ring that turns. Reduced motion keeps the ring, drops the turn. */
+  .spin-ring {
+    display: inline-block;
+    border-radius: 9999px;
+    border: 1.5px solid color-mix(in oklch, currentColor 22%, transparent);
+    border-top-color: currentColor;
+    animation: musegui-spin 0.9s linear infinite;
+  }
+
+  /* Loading copy only ("Thinking", "Working"): a sheen that says the agent is mid-step. */
+  .shimmer {
+    background-image: linear-gradient(
+      90deg,
+      var(--fg-subtle) 0%,
+      var(--fg-subtle) 38%,
+      var(--fg) 50%,
+      var(--fg-subtle) 62%,
+      var(--fg-subtle) 100%
+    );
+    background-size: 280% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: musegui-sheen 2.4s linear infinite;
+  }
+
+  .attention-pulse {
+    animation: musegui-pulse 1.8s var(--ease-in-out) infinite;
+  }
+
+  /* Popovers grow from their trigger; tooltips after the first skip the animation.
+     Scale via the `scale` property so it never overrides Radix's position `transform`. */
+  .pop {
+    transform-origin: var(
+      --radix-dropdown-menu-content-transform-origin,
+      var(--radix-tooltip-content-transform-origin, var(--radix-popover-content-transform-origin, center))
+    );
+    animation: musegui-pop-in 150ms var(--ease-out);
+  }
+  .pop[data-state="closed"] {
+    animation: musegui-pop-out 110ms ease-in forwards;
+  }
+  .pop[data-state="instant-open"] {
+    animation: none;
+  }
+  .modal-pop {
+    animation: musegui-modal-in 200ms var(--ease-out);
+  }
+  .modal-pop[data-state="closed"] {
+    animation: musegui-pop-out 120ms ease-in forwards;
+  }
+  /* A panel off the right edge: it arrives from the side it lives on, and leaves the same way. */
+  .sheet-in {
+    animation: musegui-sheet-in 220ms var(--ease-out);
+  }
+  .sheet-in[data-state="closed"] {
+    animation: musegui-sheet-out 160ms ease-in forwards;
+  }
+  .overlay-fade {
+    animation: musegui-fade-in 180ms var(--ease-out);
+  }
+  .overlay-fade[data-state="closed"] {
+    animation: musegui-fade-out 120ms ease-in forwards;
+  }
+  .toast-in {
+    animation: musegui-toast-in 260ms var(--ease-out);
+  }
+  /* Something new arrived in the transcript or dock. */
+  .enter-up {
+    animation: musegui-enter-up 220ms var(--ease-out);
+  }
+
+  /* Each word of a streaming reply resolves as it lands, instead of snapping in. */
+  .prose-musegui.streaming .tok {
+    display: inline-block;
+    animation: musegui-token-in 180ms var(--ease-out) both;
+  }
+
+  /* Beautiful UI LoadingState "Drive": a chevron wavefront through a 3x3 pixel grid. */
+  .pixel-loader > span {
+    opacity: 0.15;
+    animation: musegui-pixel 650ms ease-in-out infinite both;
+  }
+
+  /* A caret at the end of a reply that is still streaming (Beautiful UI StreamText). */
+  .prose-musegui.streaming > :last-child:is(p, h1, h2, h3, h4, blockquote)::after,
+  .prose-musegui.streaming > :is(ul, ol):last-child > li:last-child::after {
+    content: "";
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    margin-inline-start: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    vertical-align: text-bottom;
+    opacity: 0.75;
+  }
+
+  /* Agent prose. Product scale: 15px, 1.6 leading, measured column. */
+  .prose-musegui {
+    font-size: var(--text-md);
+    line-height: 1.65;
+    color: var(--fg);
+    overflow-wrap: anywhere;
+  }
+  .prose-musegui .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .prose-musegui > :first-child {
+    margin-top: 0;
+  }
+  .prose-musegui > :last-child {
+    margin-bottom: 0;
+  }
+  .prose-musegui p {
+    margin: 0 0 0.75em;
+    text-wrap: pretty;
+  }
+  .prose-musegui h1,
+  .prose-musegui h2,
+  .prose-musegui h3,
+  .prose-musegui h4 {
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 1.25em 0 0.5em;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .prose-musegui h1 {
+    font-size: 1.35em;
+  }
+  .prose-musegui h2 {
+    font-size: 1.2em;
+  }
+  .prose-musegui h3 {
+    font-size: 1.05em;
+  }
+  .prose-musegui h4 {
+    font-size: 1em;
+    color: var(--fg-muted);
+  }
+  .prose-musegui ul,
+  .prose-musegui ol {
+    margin: 0 0 0.75em;
+    padding-inline-start: 1.35em;
+  }
+  .prose-musegui ul {
+    list-style: disc;
+  }
+  .prose-musegui ol {
+    list-style: decimal;
+  }
+  .prose-musegui li {
+    margin: 0.2em 0;
+    padding-inline-start: 0.15em;
+  }
+  .prose-musegui li::marker {
+    color: var(--fg-subtle);
+  }
+  .prose-musegui a {
+    color: var(--accent-text);
+    text-decoration-line: underline;
+    text-decoration-thickness: from-font;
+    text-underline-offset: 2px;
+    text-decoration-color: color-mix(in oklch, var(--accent-text) 40%, transparent);
+  }
+  .prose-musegui a:hover {
+    text-decoration-color: currentColor;
+  }
+  .prose-musegui strong {
+    font-weight: 600;
+  }
+  .prose-musegui blockquote {
+    margin: 0 0 0.75em;
+    padding-block: 0.25em;
+    padding-inline: 0.9em 0;
+    border-inline-start: 1px solid var(--border-strong);
+    color: var(--fg-muted);
+  }
+  .prose-musegui hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 1.25em 0;
+  }
+  .prose-musegui :not(pre) > code {
+    font-size: 0.86em;
+    padding: 0.12em 0.36em;
+    border-radius: 5px;
+    background: var(--bg-active);
+    color: var(--fg);
+    overflow-wrap: anywhere;
+  }
+  .prose-musegui table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+    margin: 0 0 0.9em;
+  }
+  .prose-musegui th,
+  .prose-musegui td {
+    border-bottom: 1px solid var(--border);
+    padding: 0.45em 0.6em;
+    text-align: start;
+    vertical-align: top;
+  }
+  .prose-musegui th {
+    font-weight: 600;
+    color: var(--fg-muted);
+  }
+
+  .code-surface pre {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+
+  /* File viewer source: one block per line, numbered with a counter so copying the code leaves the numbers behind. */
+  .file-code {
+    counter-reset: line;
+    font-size: 12.5px;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+  .file-code .sh__line {
+    display: block;
+    min-height: 1.6em;
+    padding-inline-end: 1rem;
+    white-space: pre;
+  }
+  .file-code.wrap .sh__line {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding-inline-start: 3.5rem;
+    text-indent: -3.5rem;
+  }
+  .file-code .sh__line::before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    width: 3.5rem;
+    padding-inline-end: 1rem;
+    text-align: right;
+    text-indent: 0;
+    color: var(--fg-subtle);
+    opacity: 0.65;
+    user-select: none;
+  }
+  .file-code .sh__line[data-marked] {
+    background: color-mix(in oklch, var(--accent) 14%, transparent);
+  }
+  .file-code .sh__line[data-marked]::before {
+    color: var(--accent-text);
+    opacity: 1;
+  }
+
+  /* Behind transparent images, so their edges read against either theme. */
+  .file-checker {
+    background-color: var(--bg);
+    background-image: conic-gradient(var(--bg-sunken) 25%, transparent 0 50%, var(--bg-sunken) 0 75%, transparent 0);
+    background-size: 16px 16px;
+  }
+}
+
+@keyframes musegui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes musegui-sheen {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes musegui-pop-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+
+@keyframes musegui-pop-out {
+  to {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+
+/* Tailwind 4 centers with the `translate` property, so only `transform` moves here. */
+@keyframes musegui-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+@keyframes musegui-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes musegui-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+}
+
+@keyframes musegui-sheet-out {
+  to {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+}
+
+@keyframes musegui-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes musegui-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@keyframes musegui-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* The swatch beside each code theme in the picker: its keyword colour, so the menu shows what it changes. */
+.code-swatch-musegui {
+  background: oklch(0.5 0.17 20);
+}
+.code-swatch-ayu {
+  background: #ff8f40;
+}
+.code-swatch-github {
+  background: #cf222e;
+}
+.code-swatch-vercel {
+  background: #ff0080;
+}
+.code-swatch-cursor {
+  background: #c586c0;
+}
+.code-swatch-catppuccin {
+  background: #cba6f7;
+}
+
+/*
+ * Code themes. Each sets sugar-high's token colours and nothing else, so a code theme is free to differ from
+ * the app's own light or dark theme. The dark block carries more attributes, so it wins under a dark UI.
+ */
+:root[data-code-theme="ayu"] {
+  --sh-keyword: #fa8d3e;
+  --sh-string: #86b300;
+  --sh-entity: #f2ae49;
+  --sh-property: #399ee6;
+  --sh-class: #55b4d4;
+  --sh-jsxliterals: #a37acc;
+  --sh-identifier: #5c6166;
+  --sh-sign: #8a9199;
+  --sh-comment: #abb0b6;
+}
+:root[data-theme="dark"][data-code-theme="ayu"] {
+  --sh-keyword: #ff8f40;
+  --sh-string: #aad94c;
+  --sh-entity: #ffb454;
+  --sh-property: #59c2ff;
+  --sh-class: #39bae6;
+  --sh-jsxliterals: #d2a6ff;
+  --sh-identifier: #bfbdb6;
+  --sh-sign: #8a9199;
+  --sh-comment: #7b8288;
+}
+
+:root[data-code-theme="github"] {
+  --sh-keyword: #cf222e;
+  --sh-string: #0a3069;
+  --sh-entity: #8250df;
+  --sh-property: #0550ae;
+  --sh-class: #953800;
+  --sh-jsxliterals: #0a3069;
+  --sh-identifier: #24292f;
+  --sh-sign: #57606a;
+  --sh-comment: #6e7781;
+}
+:root[data-theme="dark"][data-code-theme="github"] {
+  --sh-keyword: #ff7b72;
+  --sh-string: #a5d6ff;
+  --sh-entity: #d2a8ff;
+  --sh-property: #79c0ff;
+  --sh-class: #ffa657;
+  --sh-jsxliterals: #a5d6ff;
+  --sh-identifier: #c9d1d9;
+  --sh-sign: #8b949e;
+  --sh-comment: #8b949e;
+}
+
+:root[data-code-theme="vercel"] {
+  --sh-keyword: #d3268a;
+  --sh-string: #0f8a7e;
+  --sh-entity: #0068d6;
+  --sh-property: #7343d8;
+  --sh-class: #0068d6;
+  --sh-jsxliterals: #7343d8;
+  --sh-identifier: #171717;
+  --sh-sign: #666666;
+  --sh-comment: #8f8f8f;
+}
+:root[data-theme="dark"][data-code-theme="vercel"] {
+  --sh-keyword: #ff0080;
+  --sh-string: #50e3c2;
+  --sh-entity: #52a8ff;
+  --sh-property: #bd8cff;
+  --sh-class: #52a8ff;
+  --sh-jsxliterals: #bd8cff;
+  --sh-identifier: #ededed;
+  --sh-sign: #a1a1a1;
+  --sh-comment: #8f8f8f;
+}
+
+:root[data-code-theme="cursor"] {
+  --sh-keyword: #af00db;
+  --sh-string: #a31515;
+  --sh-entity: #795e26;
+  --sh-property: #0070c1;
+  --sh-class: #267f99;
+  --sh-jsxliterals: #0000ff;
+  --sh-identifier: #1f1f1f;
+  --sh-sign: #575757;
+  --sh-comment: #008000;
+}
+:root[data-theme="dark"][data-code-theme="cursor"] {
+  --sh-keyword: #c586c0;
+  --sh-string: #ce9178;
+  --sh-entity: #dcdcaa;
+  --sh-property: #9cdcfe;
+  --sh-class: #4ec9b0;
+  --sh-jsxliterals: #569cd6;
+  --sh-identifier: #d4d4d4;
+  --sh-sign: #969696;
+  --sh-comment: #6a9955;
+}
+
+:root[data-code-theme="catppuccin"] {
+  --sh-keyword: #8839ef;
+  --sh-string: #40a02b;
+  --sh-entity: #1e66f5;
+  --sh-property: #179299;
+  --sh-class: #df8e1d;
+  --sh-jsxliterals: #ea76cb;
+  --sh-identifier: #4c4f69;
+  --sh-sign: #7c7f93;
+  --sh-comment: #8c8fa1;
+}
+:root[data-theme="dark"][data-code-theme="catppuccin"] {
+  --sh-keyword: #cba6f7;
+  --sh-string: #a6e3a1;
+  --sh-entity: #89b4fa;
+  --sh-property: #94e2d5;
+  --sh-class: #f9e2af;
+  --sh-jsxliterals: #f5c2e7;
+  --sh-identifier: #cdd6f4;
+  --sh-sign: #9399b2;
+  --sh-comment: #7f849c;
+}
+
+@keyframes musegui-token-in {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+@keyframes musegui-pixel {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  18%,
+  42% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes musegui-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* The effort slider's thumb and fill glide between stops instead of jumping. */
+.effort-slider > span:has(> [role="slider"]) {
+  transition: left 140ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.effort-range {
+  transition: right 140ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .effort-slider > span:has(> [role="slider"]),
+  .effort-range {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-ring,
+  .attention-pulse,
+  .sheet-in,
+  /* The exit rule carries an attribute, so it outranks a bare .sheet-in here. */
+  .sheet-in[data-state="closed"],
+  .prose-musegui.streaming .tok {
+    animation: none;
+  }
+  .pixel-loader > span {
+    animation: none;
+    opacity: 0.45;
+  }
+  .shimmer {
+    animation: none;
+    background: none;
+    color: var(--fg-muted);
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Interface zoom in a browser is CSS `zoom` on <html>. Chromium then scales the transform Radix
+ * puts on a menu's fixed wrapper by the zoom again, so menus drift away from their trigger. The
+ * wrapper runs at zoom 1 and its content gets the zoom back, so placement and size both hold.
+ */
+[data-radix-popper-content-wrapper] {
+  zoom: calc(1 / var(--app-zoom, 1));
+}
+[data-radix-popper-content-wrapper] > * {
+  zoom: var(--app-zoom, 1);
+}

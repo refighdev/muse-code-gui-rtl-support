@@ -1,0 +1,26 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-window",
+  "description": "Lets the UI served by the local Muse Code GUI server control its window, and check for, download and install app updates, and open outside links in the default browser.",
+  "windows": ["main"],
+  "remote": {
+    "urls": ["http://127.0.0.1:*"]
+  },
+  "permissions": [
+    "core:window:default",
+    "core:event:default",
+    "core:webview:allow-set-webview-zoom",
+    "core:window:allow-start-dragging",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close",
+    "core:window:allow-destroy",
+    "core:app:default",
+    "core:resources:allow-close",
+    "updater:default",
+    "process:allow-restart",
+    "notification:default",
+    "opener:allow-open-url",
+    "opener:allow-default-urls"
+  ]
+}

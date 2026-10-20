@@ -1,0 +1,99 @@
+name: Linux AppImage smoke test
+
+# A packaged AppImage lays its files out differently from a `tauri build --no-bundle` tree, and that layout is
+# what decides whether the app finds its bundled Node.js at all. Building the desktop app takes minutes, so this
+# runs only when something that shapes the bundle changes.
+on:
+  pull_request:
+    paths:
+      - "apps/desktop/**"
+      - "packages/server/**"
+      - ".github/workflows/linux-appimage.yml"
+  push:
+    branches: [prod]
+    paths:
+      - "apps/desktop/**"
+      - "packages/server/**"
+      - ".github/workflows/linux-appimage.yml"
+  workflow_dispatch:
+
+jobs:
+  appimage:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip until Linux bundling lands
+        id: guard
+        run: |
+          if [ -f apps/desktop/src-tauri/tauri.linux.conf.json ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "No tauri.linux.conf.json yet, so there is no AppImage to test."
+          fi
+      - uses: actions/setup-node@v4
+        if: steps.guard.outputs.ready == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        if: steps.guard.outputs.ready == 'true'
+      - name: Install Tauri and test dependencies
+        if: steps.guard.outputs.ready == 'true'
+        # xvfb stands in for a display; the webkit runtime is what the window needs once it opens.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev xvfb
+      - run: npm ci
+        if: steps.guard.outputs.ready == 'true'
+      - run: npm run build --workspace @musegui/daemon --workspace @musegui/ui --workspace @musegui/server
+        if: steps.guard.outputs.ready == 'true'
+      - name: Build the AppImage
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          MUSEGUI_NODE_TARGET: x86_64-unknown-linux-gnu
+        # No updater signing key on a pull request, so the updater artifacts are left out.
+        run: npm run tauri --workspace musegui-desktop -- build --target x86_64-unknown-linux-gnu --bundles appimage --config '{"bundle":{"createUpdaterArtifacts":false}}'
+      - name: Check what the bundle contains
+        if: steps.guard.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          bundle=apps/desktop/src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/appimage
+          image=$(ls "$bundle"/*.AppImage)
+          echo "Built $image"
+          # --appimage-extract writes squashfs-root into the working directory, so the path has to survive the cd.
+          image=$(realpath "$image")
+          (cd "$bundle" && "$image" --appimage-extract >/dev/null)
+          root="$bundle/squashfs-root"
+          test -x "$root/usr/bin/musegui" || { echo "no musegui binary in the bundle"; exit 1; }
+          test -x "$root/usr/bin/node" || { echo "the Node.js sidecar is missing from the bundle"; exit 1; }
+          "$root/usr/bin/node" --version
+          find "$root" -name server.cjs -print -quit | grep . || { echo "server.cjs is missing from the bundle"; exit 1; }
+      - name: Start it and wait for its server
+        if: steps.guard.outputs.ready == 'true'
+        run: |
+          set -uo pipefail
+          root=apps/desktop/src-tauri/target/x86_64-unknown-linux-gnu/release/bundle/appimage/squashfs-root
+          xvfb-run -a "$root/AppRun" > /tmp/musegui-stdout.log 2>&1 &
+          app=$!
+          # The app writes its port file next to its database once the server is listening.
+          for _ in $(seq 1 60); do
+            if find "$HOME/.local/share" -name server-port -print -quit 2>/dev/null | grep -q .; then
+              echo "The server came up: $(find "$HOME/.local/share" -name server-port -exec cat {} \;)"
+              kill "$app" 2>/dev/null || true
+              exit 0
+            fi
+            if ! kill -0 "$app" 2>/dev/null; then
+              echo "The app exited before its server started."
+              break
+            fi
+            sleep 2
+          done
+          echo "--- app output"
+          cat /tmp/musegui-stdout.log || true
+          echo "--- server log"
+          find "$HOME/.local/share" -name "server.log" -exec cat {} \; 2>/dev/null || true
+          kill "$app" 2>/dev/null || true
+          exit 1

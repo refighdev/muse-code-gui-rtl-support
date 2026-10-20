@@ -1,0 +1,52 @@
+# Maintainer: refighdev
+# Unofficial Helicon build with right-to-left text support, from the fork's GitHub Releases.
+pkgname=helicon-rtl-bin
+_name=Helicon
+_tag=0.22.3-rtl.1
+pkgver=${_tag//-/.}
+pkgrel=1
+pkgdesc='Unofficial desktop GUI for the Muse Code CLI, with RTL (Persian/Arabic/Hebrew) text support'
+arch=('x86_64')
+url='https://github.com/refighdev/muse-code-gui-rtl-support'
+license=('MIT')
+depends=('fuse2' 'zlib' 'hicolor-icon-theme')
+optdepends=('muse-code-bin: the Muse Code CLI that Helicon drives')
+provides=('helicon')
+conflicts=('helicon' 'helicon-bin')
+options=('!strip' '!debug')
+_appimage="${_name}_${_tag}_amd64.AppImage"
+source=("${_appimage}::${url}/releases/download/v${_tag}/${_appimage}")
+noextract=("${_appimage}")
+sha256sums=('4ee00c6893065588e0fdf4964a94dbd079e7e90a1a5593bb1eee74814b59cadb')
+
+build() {
+  chmod +x "${_appimage}"
+  # pull the icon out of the AppImage (best effort)
+  ./"${_appimage}" --appimage-extract '*.png' >/dev/null 2>&1 || true
+}
+
+package() {
+  install -Dm755 "${_appimage}" "${pkgdir}/opt/${pkgname}/${_name}.AppImage"
+
+  install -d "${pkgdir}/usr/bin"
+  cat > "${pkgdir}/usr/bin/helicon" <<'WRAP'
+#!/bin/sh
+exec /opt/helicon-rtl-bin/Helicon.AppImage "$@"
+WRAP
+  chmod 755 "${pkgdir}/usr/bin/helicon"
+
+  local icon
+  icon=$(find squashfs-root -maxdepth 1 -name '*.png' 2>/dev/null | head -n1)
+  [ -n "$icon" ] && install -Dm644 "$icon" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/helicon.png"
+
+  install -Dm644 /dev/stdin "${pkgdir}/usr/share/applications/helicon.desktop" <<'DESK'
+[Desktop Entry]
+Type=Application
+Name=Helicon (RTL)
+Comment=Desktop GUI for Muse Code, with RTL support
+Exec=helicon
+Icon=helicon
+Categories=Development;
+Terminal=false
+DESK
+}

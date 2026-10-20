@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSDocumentsFolderUsageDescription</key>
+  <string>Muse Code GUI runs Muse Code in the project folders you add, and shows their files.</string>
+  <key>NSDesktopFolderUsageDescription</key>
+  <string>Muse Code GUI runs Muse Code in the project folders you add, and shows their files.</string>
+  <key>NSDownloadsFolderUsageDescription</key>
+  <string>Muse Code GUI runs Muse Code in the project folders you add, and shows their files.</string>
+  <key>NSRemovableVolumesUsageDescription</key>
+  <string>Muse Code GUI runs Muse Code in the project folders you add, and shows their files.</string>
+  <key>NSNetworkVolumesUsageDescription</key>
+  <string>Muse Code GUI runs Muse Code in the project folders you add, and shows their files.</string>
+</dict>
+</plist>

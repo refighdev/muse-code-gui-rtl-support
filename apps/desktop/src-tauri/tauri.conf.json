@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "MuseCodeGUI",
+  "version": "0.1.0",
+  "identifier": "app.musegui.desktop",
+  "build": {
+    "frontendDist": "../../web/dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run fetch:node --workspace musegui-desktop && npm run dev --workspace @musegui/web",
+    "beforeBuildCommand": "npm run build --workspace @musegui/web && npm run bundle:server --workspace musegui-desktop && npm run fetch:node --workspace musegui-desktop"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Muse Code GUI",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 880,
+        "minHeight": 560,
+        "dragDropEnabled": false,
+        "create": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' http://127.0.0.1:*; connect-src http://127.0.0.1:*; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": ["icons/icon.png"],
+    "resources": ["resources/server.cjs", "resources/frontend"],
+    "externalBin": ["binaries/node"],
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEUxRjQxNjlDM0UwNDVBMUMKUldRY1dnUStuQmIwNFpCWWs3bExMSkdkT0dNMWxDdXcyaXFycTRhRDBUb05aTjZzcktTbVQwUTMK",
+      "endpoints": [
+        "https://github.com/refighdev/muse-code-gui-rtl-support/releases/latest/download/latest.json"
+      ],
+      "windows": { "installMode": "passive" }
+    }
+  }
+}

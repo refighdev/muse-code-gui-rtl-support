@@ -1,0 +1,110 @@
+/**
+ * Every icon the product uses, and the only place they are imported from (#16). Phosphor, like the
+ * landing page, so the live demos there sit in the same family as the page around them.
+ *
+ * Each icon comes from its own file rather than the package root: the root re-exports them with
+ * export *, which NodeNext module resolution reads as empty, and per-icon paths also keep bundles
+ * to the icons actually shown. The default weight and size are set once, in ControllerProvider.
+ *
+ * To add an icon, add its line here and import it from this module. Browse the set at phosphoricons.com.
+ */
+export { ArchiveIcon } from "@phosphor-icons/react/dist/csr/Archive";
+export { ArrowClockwiseIcon } from "@phosphor-icons/react/dist/csr/ArrowClockwise";
+export { ArrowCounterClockwiseIcon } from "@phosphor-icons/react/dist/csr/ArrowCounterClockwise";
+export { ArrowDownIcon } from "@phosphor-icons/react/dist/csr/ArrowDown";
+export { ArrowElbowDownLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowElbowDownLeft";
+export { ArrowElbowLeftUpIcon } from "@phosphor-icons/react/dist/csr/ArrowElbowLeftUp";
+export { ArrowLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+export { ArrowLineDownIcon } from "@phosphor-icons/react/dist/csr/ArrowLineDown";
+export { ArrowSquareOutIcon } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
+export { ArrowUUpLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowUUpLeft";
+export { ArrowUpIcon } from "@phosphor-icons/react/dist/csr/ArrowUp";
+export { ArrowsClockwiseIcon } from "@phosphor-icons/react/dist/csr/ArrowsClockwise";
+export { ArrowsInIcon } from "@phosphor-icons/react/dist/csr/ArrowsIn";
+export { BookOpenIcon } from "@phosphor-icons/react/dist/csr/BookOpen";
+export { BrainIcon } from "@phosphor-icons/react/dist/csr/Brain";
+export { CaretDownIcon } from "@phosphor-icons/react/dist/csr/CaretDown";
+export { CaretRightIcon } from "@phosphor-icons/react/dist/csr/CaretRight";
+export { CaretUpIcon } from "@phosphor-icons/react/dist/csr/CaretUp";
+export { ChartBarIcon } from "@phosphor-icons/react/dist/csr/ChartBar";
+export { ChatCircleDotsIcon } from "@phosphor-icons/react/dist/csr/ChatCircleDots";
+export { CheckCircleIcon } from "@phosphor-icons/react/dist/csr/CheckCircle";
+export { CheckIcon } from "@phosphor-icons/react/dist/csr/Check";
+export { CircleIcon } from "@phosphor-icons/react/dist/csr/Circle";
+export { ClockCounterClockwiseIcon } from "@phosphor-icons/react/dist/csr/ClockCounterClockwise";
+export { ClockIcon } from "@phosphor-icons/react/dist/csr/Clock";
+export { CodeIcon } from "@phosphor-icons/react/dist/csr/Code";
+export { CopyIcon } from "@phosphor-icons/react/dist/csr/Copy";
+export { CpuIcon } from "@phosphor-icons/react/dist/csr/Cpu";
+export { DatabaseIcon } from "@phosphor-icons/react/dist/csr/Database";
+export { DotsThreeIcon } from "@phosphor-icons/react/dist/csr/DotsThree";
+export { DownloadSimpleIcon } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+export { EyeIcon } from "@phosphor-icons/react/dist/csr/Eye";
+export { FileAudioIcon } from "@phosphor-icons/react/dist/csr/FileAudio";
+export { FileCodeIcon } from "@phosphor-icons/react/dist/csr/FileCode";
+export { FileIcon } from "@phosphor-icons/react/dist/csr/File";
+export { FileImageIcon } from "@phosphor-icons/react/dist/csr/FileImage";
+export { FileMagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/FileMagnifyingGlass";
+export { FilePlusIcon } from "@phosphor-icons/react/dist/csr/FilePlus";
+export { FileTextIcon } from "@phosphor-icons/react/dist/csr/FileText";
+export { FileTxtIcon } from "@phosphor-icons/react/dist/csr/FileTxt";
+export { FileVideoIcon } from "@phosphor-icons/react/dist/csr/FileVideo";
+export { FlowArrowIcon } from "@phosphor-icons/react/dist/csr/FlowArrow";
+export { FolderIcon } from "@phosphor-icons/react/dist/csr/Folder";
+export { FolderOpenIcon } from "@phosphor-icons/react/dist/csr/FolderOpen";
+export { FolderPlusIcon } from "@phosphor-icons/react/dist/csr/FolderPlus";
+export { FunnelSimpleIcon } from "@phosphor-icons/react/dist/csr/FunnelSimple";
+export { GaugeIcon } from "@phosphor-icons/react/dist/csr/Gauge";
+export { GearSixIcon } from "@phosphor-icons/react/dist/csr/GearSix";
+export { GitBranchIcon } from "@phosphor-icons/react/dist/csr/GitBranch";
+export { GitForkIcon } from "@phosphor-icons/react/dist/csr/GitFork";
+export { GlobeIcon } from "@phosphor-icons/react/dist/csr/Globe";
+export { InfoIcon } from "@phosphor-icons/react/dist/csr/Info";
+export { LightningIcon } from "@phosphor-icons/react/dist/csr/Lightning";
+export { LinkIcon } from "@phosphor-icons/react/dist/csr/Link";
+export { ListChecksIcon } from "@phosphor-icons/react/dist/csr/ListChecks";
+export { LockIcon } from "@phosphor-icons/react/dist/csr/Lock";
+export { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+export { MagnifyingGlassMinusIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlassMinus";
+export { MagnifyingGlassPlusIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlassPlus";
+export { MinusIcon } from "@phosphor-icons/react/dist/csr/Minus";
+export { MonitorIcon } from "@phosphor-icons/react/dist/csr/Monitor";
+export { MoonIcon } from "@phosphor-icons/react/dist/csr/Moon";
+export { NotePencilIcon } from "@phosphor-icons/react/dist/csr/NotePencil";
+export { PaperPlaneRightIcon } from "@phosphor-icons/react/dist/csr/PaperPlaneRight";
+export { PaperclipIcon } from "@phosphor-icons/react/dist/csr/Paperclip";
+export { PauseIcon } from "@phosphor-icons/react/dist/csr/Pause";
+export { PencilSimpleIcon } from "@phosphor-icons/react/dist/csr/PencilSimple";
+export { PencilSimpleLineIcon } from "@phosphor-icons/react/dist/csr/PencilSimpleLine";
+export { PlayIcon } from "@phosphor-icons/react/dist/csr/Play";
+export { PlugsIcon } from "@phosphor-icons/react/dist/csr/Plugs";
+export { PlusIcon } from "@phosphor-icons/react/dist/csr/Plus";
+export { PushPinIcon } from "@phosphor-icons/react/dist/csr/PushPin";
+export { PushPinSlashIcon } from "@phosphor-icons/react/dist/csr/PushPinSlash";
+export { QuestionIcon } from "@phosphor-icons/react/dist/csr/Question";
+export { RobotIcon } from "@phosphor-icons/react/dist/csr/Robot";
+export { ScrollIcon } from "@phosphor-icons/react/dist/csr/Scroll";
+export { ShieldChevronIcon } from "@phosphor-icons/react/dist/csr/ShieldChevron";
+export { ShieldIcon } from "@phosphor-icons/react/dist/csr/Shield";
+export { ShieldSlashIcon } from "@phosphor-icons/react/dist/csr/ShieldSlash";
+export { ShieldWarningIcon } from "@phosphor-icons/react/dist/csr/ShieldWarning";
+export { SidebarSimpleIcon } from "@phosphor-icons/react/dist/csr/SidebarSimple";
+export { SignInIcon } from "@phosphor-icons/react/dist/csr/SignIn";
+export { SkipForwardIcon } from "@phosphor-icons/react/dist/csr/SkipForward";
+export { SquareHalfBottomIcon } from "@phosphor-icons/react/dist/csr/SquareHalfBottom";
+export { SquareHalfIcon } from "@phosphor-icons/react/dist/csr/SquareHalf";
+export { SquareIcon } from "@phosphor-icons/react/dist/csr/Square";
+export { StackIcon } from "@phosphor-icons/react/dist/csr/Stack";
+export { StopCircleIcon } from "@phosphor-icons/react/dist/csr/StopCircle";
+export { SunIcon } from "@phosphor-icons/react/dist/csr/Sun";
+export { TargetIcon } from "@phosphor-icons/react/dist/csr/Target";
+export { TerminalWindowIcon } from "@phosphor-icons/react/dist/csr/TerminalWindow";
+export { TrashIcon } from "@phosphor-icons/react/dist/csr/Trash";
+export { TreeStructureIcon } from "@phosphor-icons/react/dist/csr/TreeStructure";
+export { TreeViewIcon } from "@phosphor-icons/react/dist/csr/TreeView";
+export { UserIcon } from "@phosphor-icons/react/dist/csr/User";
+export { WarningCircleIcon } from "@phosphor-icons/react/dist/csr/WarningCircle";
+export { WarningIcon } from "@phosphor-icons/react/dist/csr/Warning";
+export { WrenchIcon } from "@phosphor-icons/react/dist/csr/Wrench";
+export { XCircleIcon } from "@phosphor-icons/react/dist/csr/XCircle";
+export { XIcon } from "@phosphor-icons/react/dist/csr/X";

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FBFCFE" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101113" />
+    <title>Muse Code GUI</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script>
+      // Resolve the theme and zoom before first paint so neither flashes its default.
+      (function () {
+        var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = dark ? "dark" : "light";
+        var zoom = 1;
+        try {
+          var prefs = JSON.parse(localStorage.getItem("musegui.prefs.v1") || "{}");
+          if (prefs.theme === "light" || prefs.theme === "dark") theme = prefs.theme;
+          if (typeof prefs.zoom === "number" && isFinite(prefs.zoom)) zoom = prefs.zoom;
+        } catch (e) {}
+        document.documentElement.dataset.theme = theme;
+        if (zoom !== 1 && !("__TAURI_INTERNALS__" in window)) {
+          document.documentElement.style.zoom = String(zoom);
+          document.documentElement.style.setProperty("--app-zoom", String(zoom));
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

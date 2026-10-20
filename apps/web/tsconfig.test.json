@@ -1,0 +1,17 @@
+{
+  "//": "The app builds through Vite with noEmit, which cannot produce something `node --test` can run. This config emits instead, the way every package in the repo tests.",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist-test",
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node", "react", "react-dom"],
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": false
+  },
+  "include": ["src", "test"]
+}

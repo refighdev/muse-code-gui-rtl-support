@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["node", "react", "react-dom"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "declaration": false,
+    "sourceMap": false,
+    "paths": {
+      "@musegui/ui": ["../../packages/ui/src/index.ts"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

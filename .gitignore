@@ -1,0 +1,28 @@
+# Node
+node_modules/
+dist/
+dist-test/
+build/
+*.tsbuildinfo
+
+# Rust / Tauri
+**/target/
+**/src-tauri/gen/
+**/src-tauri/resources/
+# Bundled Node.js sidecar (apps/desktop/scripts/fetch-node.mjs)
+**/src-tauri/binaries/
+apps/desktop/.cache/
+
+# Env / secrets: never commit real keys
+.env
+.env.*
+*.pem
+*.key
+auth.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

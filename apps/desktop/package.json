@@ -1,0 +1,17 @@
+{
+  "name": "musegui-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Muse Code GUI desktop shell (Tauri): window plus local server sidecar",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "bundle:server": "node scripts/bundle-server.mjs",
+    "tauri": "tauri",
+    "fetch:node": "node scripts/fetch-node.mjs"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "esbuild": "^0.24.0"
+  }
+}
