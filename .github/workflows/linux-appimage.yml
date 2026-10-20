@@ -10,7 +10,7 @@ on:
       - "packages/server/**"
       - ".github/workflows/linux-appimage.yml"
   push:
-    branches: [prod]
+    branches: [main]
     paths:
       - "apps/desktop/**"
       - "packages/server/**"
