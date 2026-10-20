@@ -82,3 +82,12 @@ jobs:
             fs.writeFileSync("latest.json", JSON.stringify(latest, null, 2));
           '
           gh release upload "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" "${appimage[0]}" "${appimage[0]}.sig" latest.json --clobber
+      # The editor extension, attached to the same release so it can be installed with "Install from VSIX...".
+      - name: Build the editor extension
+        run: |
+          npm run build --workspace @musegui/web
+          npm run package --workspace musegui
+      - name: Attach the extension to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ github.ref_name }}" "apps/vscode/musegui.vsix#muse-code-gui-${{ github.ref_name }}.vsix" --clobber

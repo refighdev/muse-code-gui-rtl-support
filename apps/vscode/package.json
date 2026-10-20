@@ -1,0 +1,179 @@
+{
+  "name": "musegui",
+  "displayName": "Muse Code GUI (unofficial, RTL)",
+  "description": "Muse Code in a side panel for VS Code and Cursor: threads as tabs, approvals you can read, the files each thread changed. Uses your own muse login (needs a Muse Code plan; the free Muse app doesn't include it).",
+  "version": "0.1.1",
+  "publisher": "refighdev",
+  "private": true,
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/refighdev/muse-code-gui-rtl-support",
+    "directory": "apps/vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/refighdev/muse-code-gui-rtl-support/issues"
+  },
+  "galleryBanner": {
+    "color": "#1A1A2E",
+    "theme": "dark"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "keywords": [
+    "muse code",
+    "muse",
+    "muse-code",
+    "muse cli",
+    "meta",
+    "coding agent",
+    "meta coding agent",
+    "ai agent",
+    "msp",
+    "gui",
+    "approvals",
+    "session history",
+    "agent",
+    "ai",
+    "chat",
+    "coding assistant",
+    "diff",
+    "code review",
+    "meta ai",
+    "muse spark",
+    "llm",
+    "sidebar",
+    "terminal",
+    "threads",
+    "ssh",
+    "wsl",
+    "cursor",
+    "windsurf"
+  ],
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "musegui.open",
+        "title": "Open Muse Code GUI",
+        "category": "Muse Code GUI",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "musegui.newThread",
+        "title": "New Thread",
+        "category": "Muse Code GUI",
+        "icon": "$(add)"
+      },
+      {
+        "command": "musegui.openInEditor",
+        "title": "Open Full Muse Code GUI in Editor",
+        "category": "Muse Code GUI",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "musegui.openForFolder",
+        "title": "New Thread in This Folder",
+        "category": "Muse Code GUI"
+      },
+      {
+        "command": "musegui.openInBrowser",
+        "title": "Open in Browser",
+        "category": "Muse Code GUI"
+      },
+      {
+        "command": "musegui.restart",
+        "title": "Restart Server",
+        "category": "Muse Code GUI"
+      },
+      {
+        "command": "musegui.showLog",
+        "title": "Show Log",
+        "category": "Muse Code GUI"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "musegui",
+          "title": "Muse Code GUI",
+          "icon": "media/activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "musegui": [
+        {
+          "type": "webview",
+          "id": "musegui.panel",
+          "name": "Muse Code GUI"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "musegui.openInEditor",
+          "when": "view == musegui.panel",
+          "group": "navigation@2"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "musegui.openForFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation@90"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "musegui.open",
+        "key": "ctrl+alt+m",
+        "mac": "cmd+alt+m"
+      }
+    ],
+    "configuration": {
+      "title": "Muse Code GUI",
+      "properties": {
+        "musegui.panelBorder": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "left",
+            "right",
+            "none"
+          ],
+          "default": "auto",
+          "markdownDescription": "Which edge of the Muse Code GUI side panel gets a divider line. `auto` puts it on the edge facing the editor, going by `workbench.sideBar.location`; pick `left` or `right` if you moved Muse Code GUI to the other side bar.",
+          "enumDescriptions": [
+            "The edge facing the editor, based on the side bar's location",
+            "Left edge",
+            "Right edge",
+            "No divider"
+          ]
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "package": "node scripts/build.mjs && npx --yes @vscode/vsce@4.0.0 package --no-dependencies --out musegui.vsix",
+    "test": "node scripts/build.mjs && node --test test/*.test.mjs",
+    "test:integration": "node scripts/build.mjs && node test/integration/run.mjs"
+  },
+  "devDependencies": {
+    "@types/vscode": "~1.101.0",
+    "@vscode/test-electron": "^3.1.0"
+  },
+  "extensionKind": [
+    "workspace"
+  ]
+}
